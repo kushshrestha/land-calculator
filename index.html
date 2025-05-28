@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Nepali Land Size Calculator 🇳🇵 ➡️ 🇦🇺</title>
+  <title>Nepali Land Size Calculator 🇳🇵 ➔ 🇦🇺</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -14,6 +14,11 @@
     h1 {
       text-align: center;
       color: #005f73;
+    }
+    h3 {
+      text-align: center;
+      color: #888;
+      margin-top: -10px;
     }
     .container {
       max-width: 700px;
@@ -63,10 +68,11 @@
 </head>
 <body>
 
-  <h1>Nepali Land Size Calculator 🇳🇵 ➡️ 🇦🇺</h1>
+  <h1>Nepali Land Size Calculator 🇳🇵 ➔ 🇦🇺</h1>
+  <h3>Developed by kushshrestha</h3>
 
   <div class="container">
-    <h2>Ropani–Aana–Paisa–Dam ➡️ Square Metres</h2>
+    <h2>Ropani–Aana–Paisa–Dam ➔ Square Metres</h2>
     <label>Ropani: <input type="number" id="ropani"></label>
     <label>Aana: <input type="number" id="aana"></label>
     <label>Paisa: <input type="number" id="paisa"></label>
@@ -77,8 +83,114 @@
   </div>
 
   <div class="container">
-    <h
+    <h2>Square Metres ➔ Ropani–Aana–Paisa–Dam</h2>
+    <label>Square Metres: <input type="number" id="sqm"></label>
+    <button onclick="convertToRopani()">Convert</button>
+    <button onclick="resetSqm()">Reset</button>
+    <div class="result" id="rapdResult"></div>
+  </div>
 
+  <div class="container">
+    <h2>Bigha–Kattha–Dhur ➔ Square Metres</h2>
+    <label>Bigha: <input type="number" id="bigha"></label>
+    <label>Kattha: <input type="number" id="kattha"></label>
+    <label>Dhur: <input type="number" id="dhur"></label>
+    <button onclick="convertToSqmBigha()">Convert</button>
+    <button onclick="resetBigha()">Reset</button>
+    <div class="result" id="sqmBighaResult"></div>
+  </div>
 
+  <div class="container">
+    <h2>Square Metres ➔ Bigha–Kattha–Dhur</h2>
+    <label>Square Metres: <input type="number" id="sqm2"></label>
+    <button onclick="convertToBigha()">Convert</button>
+    <button onclick="resetSqm2()">Reset</button>
+    <div class="result" id="bighaResult"></div>
+  </div>
 
+  <div class="container">
+    <h2>Conversion History</h2>
+    <div class="history" id="historyLog"></div>
+  </div>
 
+  <script>
+    const sqmPerUnit = {
+      ropani: 508.72,
+      aana: 31.80,
+      paisa: 7.94,
+      dam: 1.99,
+      bigha: 6772.63,
+      kattha: 338.63,
+      dhur: 16.93
+    };
+
+    function addToHistory(text) {
+      const log = document.getElementById('historyLog');
+      log.textContent = `${text}\n${log.textContent}`;
+    }
+
+    function convertToSqm() {
+      const r = +document.getElementById('ropani').value || 0;
+      const a = +document.getElementById('aana').value || 0;
+      const p = +document.getElementById('paisa').value || 0;
+      const d = +document.getElementById('dam').value || 0;
+      const sqm = r * sqmPerUnit.ropani + a * sqmPerUnit.aana + p * sqmPerUnit.paisa + d * sqmPerUnit.dam;
+      const result = `Total: ${sqm.toFixed(2)} m²`;
+      document.getElementById('sqmResult').innerText = result;
+      addToHistory(`RAPD to m²: ${r}R ${a}A ${p}P ${d}D = ${result}`);
+    }
+
+    function convertToRopani() {
+      let sqm = +document.getElementById('sqm').value || 0;
+      const r = Math.floor(sqm / sqmPerUnit.ropani); sqm %= sqmPerUnit.ropani;
+      const a = Math.floor(sqm / sqmPerUnit.aana); sqm %= sqmPerUnit.aana;
+      const p = Math.floor(sqm / sqmPerUnit.paisa); sqm %= sqmPerUnit.paisa;
+      const d = Math.round(sqm / sqmPerUnit.dam);
+      const result = `${r} Ropani, ${a} Aana, ${p} Paisa, ${d} Dam`;
+      document.getElementById('rapdResult').innerText = `Result: ${result}`;
+      addToHistory(`m² to RAPD: ${document.getElementById('sqm').value} m² = ${result}`);
+    }
+
+    function convertToSqmBigha() {
+      const b = +document.getElementById('bigha').value || 0;
+      const k = +document.getElementById('kattha').value || 0;
+      const d = +document.getElementById('dhur').value || 0;
+      const sqm = b * sqmPerUnit.bigha + k * sqmPerUnit.kattha + d * sqmPerUnit.dhur;
+      const result = `Total: ${sqm.toFixed(2)} m²`;
+      document.getElementById('sqmBighaResult').innerText = result;
+      addToHistory(`BKD to m²: ${b}B ${k}K ${d}D = ${result}`);
+    }
+
+    function convertToBigha() {
+      let sqm = +document.getElementById('sqm2').value || 0;
+      const b = Math.floor(sqm / sqmPerUnit.bigha); sqm %= sqmPerUnit.bigha;
+      const k = Math.floor(sqm / sqmPerUnit.kattha); sqm %= sqmPerUnit.kattha;
+      const d = Math.round(sqm / sqmPerUnit.dhur);
+      const result = `${b} Bigha, ${k} Kattha, ${d} Dhur`;
+      document.getElementById('bighaResult').innerText = `Result: ${result}`;
+      addToHistory(`m² to BKD: ${document.getElementById('sqm2').value} m² = ${result}`);
+    }
+
+    function resetRopani() {
+      ['ropani', 'aana', 'paisa', 'dam'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('sqmResult').innerText = '';
+    }
+
+    function resetSqm() {
+      document.getElementById('sqm').value = '';
+      document.getElementById('rapdResult').innerText = '';
+    }
+
+    function resetBigha() {
+      ['bigha', 'kattha', 'dhur'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('sqmBighaResult').innerText = '';
+    }
+
+    function resetSqm2() {
+      document.getElementById('sqm2').value = '';
+      document.getElementById('bighaResult').innerText = '';
+    }
+  </script>
+
+</body>
+</html>
